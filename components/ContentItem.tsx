@@ -4,13 +4,23 @@ import { ISeriesItem } from "../model/SeriesItem";
 
 interface IContentItemProps {
   item: ISeriesItem;
+  navigation: any;
 }
 
 const ContentItem = (props: IContentItemProps) => {
+  const onSelectItem = () => {
+    props.navigation.navigate({
+      routeName: "DetailView",
+      params: {
+        itemId: props.item.id,
+      },
+    });
+  };
+
   return (
     <View style={styles.itemContainer}>
       <View style={styles.touchable}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onSelectItem()}>
           <View style={styles.imageContainer}>
             <Image
               style={styles.image}

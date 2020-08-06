@@ -3,34 +3,42 @@ import { View, Text, Button, StyleSheet, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import * as contentActions from "../store/actions/ContentActions";
 import { ISeriesItem } from "../model/SeriesItem";
-import ContentItem from "../components/ContentItem";
+import ListCardItem from "../components//ListCardItem";
 
-interface CatalogViewProps {}
-
-const CatalogView = (props: CatalogViewProps) => {
+const CatalogView = (props: any) => {
   const dispatch = useDispatch();
 
-  interface rootState {
-    seriesContent: ISeriesItem;
-  }
+  let items: Array<ISeriesItem> = useSelector(
+    (state) => state.seriesContent.items
+  );
+  let highestRated: Array<ISeriesItem> = [];
+  let topRated: Array<ISeriesItem> = [];
 
-  let items: ISeriesItem[] = useSelector((state) => state.seriesContent.items);
+  items.map((item) => {
+    if (item.averageRating) {
+      if (item.averageRating >= 80) {
+        topRated.push(item);
+      } else {
+        highestRated.push(item);
+      }
+    }
+  });
 
   useEffect(() => {
-    dispatch(contentActions.listContent("anime", 0, 0));
+    dispatch(contentActions.listInitialContent("anime", 0, 0));
   }, [dispatch]);
-
-  const renderItems = (itemData: any) => {
-    return <ContentItem item={itemData.item} />;
-  };
 
   return (
     <View style={styles.screen}>
-      <FlatList
-        style={{ width: "100%" }}
-        horizontal={true}
-        data={items}
-        renderItem={renderItems}
+      <ListCardItem
+        items={topRated}
+        label="Highest Rated"
+        navigation={props.navigation}
+      />
+      <ListCardItem
+        items={highestRated}
+        label="Top Rated"
+        navigation={props.navigation}
       />
     </View>
   );

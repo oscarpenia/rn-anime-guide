@@ -1,4 +1,9 @@
-import UrlHelper from "../../api/UrlHelper";
+import {
+  getRequestedUrl,
+  IUrlPagination,
+  IRelationShip,
+} from "../../api/UrlHelper";
+
 export enum ContentActions {
   LIST_CONTENT = "LIST_CONTENT",
 }
@@ -8,16 +13,25 @@ export interface IAction {
   payload: Array<String>;
 }
 
-export const listContent = (
+export const listInitialContent = (
   type: string,
   pageLimit: number,
   pageOffset: number
 ) => {
   return async (dispatch) => {
     let normalize = require("json-api-normalize");
-    let urlHelper = new UrlHelper(type, pageLimit, pageOffset);
     let url: string;
-    url = urlHelper.getRequestedUrl();
+
+    let pagination: IUrlPagination = {
+      pageLimit: 20,
+      pageOffset: 0,
+    };
+
+    let relations: IRelationShip = {
+      relationship: ["genres", "streamingLinks"],
+    };
+
+    url = getRequestedUrl(type, pagination, undefined, undefined, relations);
     console.log(url);
 
     try {
@@ -40,7 +54,19 @@ export const listContent = (
         "ratingRank",
         "subtype",
         "posterImage",
+        "averageRating",
+        "synopsis",
+        "episodeLength",
+        "subtype",
+        "episodeCount",
+        "startDate",
+        "endDate",
+        "status",
+        "ageRating",
+        "genres.name",
+        "streamingLinks.url",
       ]);
+
       let action: IAction = {
         type: ContentActions.LIST_CONTENT,
         payload: normalizedData,
