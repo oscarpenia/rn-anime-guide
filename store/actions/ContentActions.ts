@@ -2,11 +2,9 @@ import {
   getRequestedUrl,
   IUrlPagination,
   IRelationShip,
-} from "../../api/UrlHelper";
-
-export enum ContentActions {
-  LIST_CONTENT = "LIST_CONTENT",
-}
+  ISort,
+} from "../../api/urlHelper";
+import { ContentActions } from "../../constants/actionContants";
 
 export interface IAction {
   type: String;
@@ -15,23 +13,25 @@ export interface IAction {
 
 export const listInitialContent = (
   type: string,
-  pageLimit: number,
-  pageOffset: number
+  listType: string,
+  pagination?: IUrlPagination,
+  relations?: IRelationShip,
+  sort?: ISort,
+  typeFilter?: IUrlFilter,
+  typeFieldSet?: IFieldSet
 ) => {
   return async (dispatch) => {
     let normalize = require("json-api-normalize");
     let url: string;
 
-    let pagination: IUrlPagination = {
-      pageLimit: 20,
-      pageOffset: 0,
-    };
-
-    let relations: IRelationShip = {
-      relationship: ["genres", "streamingLinks"],
-    };
-
-    url = getRequestedUrl(type, pagination, undefined, undefined, relations);
+    url = getRequestedUrl(
+      type,
+      pagination,
+      typeFilter,
+      typeFieldSet,
+      relations,
+      sort
+    );
     console.log(url);
 
     try {
@@ -64,11 +64,12 @@ export const listInitialContent = (
         "status",
         "ageRating",
         "genres.name",
+        "genres.id",
         "streamingLinks.url",
       ]);
 
       let action: IAction = {
-        type: ContentActions.LIST_CONTENT,
+        type: listType,
         payload: normalizedData,
       };
 
@@ -77,4 +78,8 @@ export const listInitialContent = (
       throw Err;
     }
   };
+};
+
+export const clearSections = (contentType: string) => {
+  return { type: ContentActions.CLEAR_STATE, payload: [""] };
 };

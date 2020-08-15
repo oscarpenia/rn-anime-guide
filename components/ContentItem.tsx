@@ -1,10 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { ISeriesItem } from "../model/SeriesItem";
+import { ISeriesItem } from "../model/seriesItem";
 
 interface IContentItemProps {
   item: ISeriesItem;
+  contentType: string;
   navigation: any;
+  containerStyle: any;
+  textStyle: any;
 }
 
 const ContentItem = (props: IContentItemProps) => {
@@ -13,12 +16,13 @@ const ContentItem = (props: IContentItemProps) => {
       routeName: "DetailView",
       params: {
         itemId: props.item.id,
+        contentType: props.contentType,
       },
     });
   };
 
   return (
-    <View style={styles.itemContainer}>
+    <View style={{ ...props.containerStyle }}>
       <View style={styles.touchable}>
         <TouchableOpacity onPress={() => onSelectItem()}>
           <View style={styles.imageContainer}>
@@ -31,7 +35,7 @@ const ContentItem = (props: IContentItemProps) => {
                 adjustsFontSizeToFit={true}
                 allowFontScaling={true}
                 numberOfLines={2}
-                style={styles.title}
+                style={{ ...props.textStyle }}
               >
                 {props.item.canonicalTitle}
               </Text>
@@ -59,22 +63,6 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignContent: "center",
-  },
-  title: {
-    fontSize: 18,
-    marginTop: 5,
-    textAlign: "center",
-  },
-  itemContainer: {
-    width: 150,
-    height: 220,
-    margin: 5,
-    shadowColor: "black",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: -9, height: -13 },
-    shadowRadius: 15,
-    borderRadius: 10,
-    backgroundColor: "white",
   },
 });
 

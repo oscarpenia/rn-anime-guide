@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import ContentReducer from "./store/reducers/ContentReducers";
+import ContentReducer from "./store/reducers/contentReducers";
 
 export default function App() {
   const animeGuideReducers = combineReducers({

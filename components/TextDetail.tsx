@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, ShadowPropTypesIOS } from "react-native";
-import { IGenres } from "../model/SeriesItem";
+import { StyleSheet, Text, View } from "react-native";
+import { IGenres } from "../model/seriesItem";
 
 interface ITextDetail {
   title: string;

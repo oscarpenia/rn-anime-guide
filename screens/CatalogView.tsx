@@ -1,53 +1,98 @@
 import React, { useEffect } from "react";
-import { View, Text, Button, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import * as contentActions from "../store/actions/ContentActions";
-import { ISeriesItem } from "../model/SeriesItem";
+import * as contentActions from "../store/actions/contentActions";
+import { ISeriesItem } from "../model/seriesItem";
 import ListCardItem from "../components//ListCardItem";
+import { IUrlPagination, IRelationShip, ISort } from "../api/urlHelper";
+import { ContentActions } from "../constants/actionContants";
+
+let pagination: IUrlPagination = {
+  pageLimit: 20,
+  pageOffset: 0,
+};
+
+let relations: IRelationShip = {
+  relationship: ["genres", "streamingLinks"],
+};
+
+let sortHighestRated: ISort = {
+  fields: ["ratingRank"],
+};
+let sortMostPopular: ISort = {
+  fields: ["popularityRank"],
+};
 
 const CatalogView = (props: any) => {
   const dispatch = useDispatch();
 
-  let items: Array<ISeriesItem> = useSelector(
-    (state) => state.seriesContent.items
+  let highestRated: Array<ISeriesItem> = useSelector(
+    (state) => state.seriesContent.highestRatedItems
   );
-  let highestRated: Array<ISeriesItem> = [];
-  let topRated: Array<ISeriesItem> = [];
 
-  items.map((item) => {
-    if (item.averageRating) {
-      if (item.averageRating >= 80) {
-        topRated.push(item);
-      } else {
-        highestRated.push(item);
-      }
-    }
-  });
+  let mostPopularItems: Array<ISeriesItem> = useSelector(
+    (state) => state.seriesContent.mostPopularItems
+  );
 
   useEffect(() => {
-    dispatch(contentActions.listInitialContent("anime", 0, 0));
+    dispatch(contentActions.clearSections());
+
+    dispatch(
+      contentActions.listInitialContent(
+        "anime",
+        ContentActions.LIST_HIGHEST_RATED_CONTENT,
+        pagination,
+        relations,
+        sortHighestRated
+      )
+    );
+    dispatch(
+      contentActions.listInitialContent(
+        "anime",
+        ContentActions.LIST_MOST_POPULAR_CONTENT,
+        pagination,
+        relations,
+        sortMostPopular
+      )
+    );
   }, [dispatch]);
 
   return (
-    <View style={styles.screen}>
-      <ListCardItem
-        items={topRated}
-        label="Highest Rated"
-        navigation={props.navigation}
-      />
-      <ListCardItem
-        items={highestRated}
-        label="Top Rated"
-        navigation={props.navigation}
-      />
-    </View>
+    <SafeAreaView style={styles.screen}>
+      <ScrollView>
+        <View style={styles.listContainer}>
+          <ListCardItem
+            items={highestRated}
+            label="Highest Rated"
+            navigation={props.navigation}
+            contentType={ContentActions.LIST_HIGHEST_RATED_CONTENT}
+          />
+          <ListCardItem
+            items={mostPopularItems}
+            label="Top Rated"
+            navigation={props.navigation}
+            contentType={ContentActions.LIST_MOST_POPULAR_CONTENT}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    marginTop: 30,
+    marginTop: 20,
+  },
+  listContainer: {
+    marginBottom: 20,
   },
 });
 

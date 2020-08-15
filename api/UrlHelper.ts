@@ -21,6 +21,10 @@ export interface IRelationShip {
   relationship: Array<string>;
 }
 
+export interface ISort {
+  fields: Array<string>;
+}
+
 const baseUrl: string = "https://kitsu.io/api/edge";
 
 export const getRequestedUrl = (
@@ -28,7 +32,8 @@ export const getRequestedUrl = (
   typePagination?: IUrlPagination,
   typeFilter?: IUrlFilter,
   typeFieldSet?: IFieldSet,
-  typeRelationShip?: IRelationShip
+  typeRelationShip?: IRelationShip,
+  typeSort?: ISort
 ) => {
   let url: string = "";
   if (!type) {
@@ -44,6 +49,12 @@ export const getRequestedUrl = (
       url.concat(`[${typeFilter.fields.atribute}]=${typeFilter.fields.value}`);
       url.concat("&");
     }
+  }
+
+  if (typeSort) {
+    let fields: string = typeSort.fields.reduce((a, b) => a + "," + b);
+    let tmpUrl = url.concat(`sort=${fields}&`);
+    url = tmpUrl;
   }
 
   if (typeRelationShip) {

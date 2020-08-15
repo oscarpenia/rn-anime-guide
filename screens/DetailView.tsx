@@ -9,11 +9,11 @@ import {
   StyleSheet,
   Linking,
   Alert,
-  Button,
 } from "react-native";
-import { ISeriesItem, IStreamLinks } from "../model/SeriesItem";
+import { ISeriesItem, IStreamLinks } from "../model/seriesItem";
 import TextDetail from "../components/TextDetail";
 import colors from "../constants/Colors";
+import { ContentActions } from "../constants/actionContants";
 
 interface IDetailViewProps {
   navigation: any; //Pending to implement typed navigation
@@ -49,9 +49,23 @@ const OpenURLButton = ({ url, children }) => {
 };
 
 const DetailView = (props: IDetailViewProps) => {
+  const getItemsFromState = (type: string, state: any) => {
+    if (type === ContentActions.LIST_HIGHEST_RATED_CONTENT) {
+      return state.seriesContent.highestRatedItems.find(
+        (item: ISeriesItem) => item.id === itemId
+      );
+    } else if (type === ContentActions.LIST_MOST_POPULAR_CONTENT) {
+      return state.seriesContent.mostPopularItems.find(
+        (item: ISeriesItem) => item.id === itemId
+      );
+    }
+  };
+
   const itemId: number = props.navigation.getParam("itemId");
-  const item: ISeriesItem = useSelector(
-    (state) => state.seriesContent.items[itemId - 1]
+  const contentType: string = props.navigation.getParam("contentType");
+
+  const item: ISeriesItem = useSelector((state) =>
+    getItemsFromState(contentType, state)
   );
 
   const getYearFormat = (startDate?: string, endDate?: string) => {
@@ -127,7 +141,7 @@ const DetailView = (props: IDetailViewProps) => {
                 </Text>
               ) : (
                 item.streamLinks?.map((stream: IStreamLinks) => {
-                  return <Url url={stream.url} />;
+                  return <Url key={stream.url} url={stream.url} />;
                 })
               )}
             </View>
@@ -136,6 +150,12 @@ const DetailView = (props: IDetailViewProps) => {
       </View>
     </ScrollView>
   );
+};
+
+DetailView.navigationOptions = (navigationData: any) => {
+  return {
+    headerTitle: "Details",
+  };
 };
 
 const styles = StyleSheet.create({
