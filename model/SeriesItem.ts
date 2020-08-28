@@ -21,6 +21,7 @@ export interface ISeriesItem {
   endDate?: string;
   status?: string;
   ageRating?: string;
+  youtubeLink?: string;
   genres?: Array<IGenres>;
   streamLinks?: Array<IStreamLinks>;
 }

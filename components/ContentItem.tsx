@@ -4,7 +4,7 @@ import { ISeriesItem } from "../model/seriesItem";
 
 interface IContentItemProps {
   item: ISeriesItem;
-  contentType: string;
+  contentType?: string;
   navigation: any;
   containerStyle: any;
   textStyle: any;
@@ -15,8 +15,7 @@ const ContentItem = (props: IContentItemProps) => {
     props.navigation.navigate({
       routeName: "DetailView",
       params: {
-        itemId: props.item.id,
-        contentType: props.contentType,
+        item: props.item,
       },
     });
   };

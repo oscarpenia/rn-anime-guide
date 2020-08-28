@@ -9,11 +9,13 @@ import {
   StyleSheet,
   Linking,
   Alert,
+  Platform,
 } from "react-native";
 import { ISeriesItem, IStreamLinks } from "../model/seriesItem";
 import TextDetail from "../components/TextDetail";
 import colors from "../constants/Colors";
-import { ContentActions } from "../constants/actionContants";
+import YouTube from "react-native-youtube";
+import { Ionicons } from "@expo/vector-icons";
 
 interface IDetailViewProps {
   navigation: any; //Pending to implement typed navigation
@@ -35,38 +37,15 @@ const OpenURLButton = ({ url, children }) => {
   }, [url]);
   return (
     <View style={styles.streamContainer}>
-      <TouchableOpacity onPress={handlePress}>
-        <Text
-          numberOfLines={2}
-          adjustsFontSizeToFit={true}
-          style={styles.streamLinkText}
-        >
-          {children}
-        </Text>
-      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePress}>{children}</TouchableOpacity>
     </View>
   );
 };
 
+const openUrl = () => {};
+
 const DetailView = (props: IDetailViewProps) => {
-  const getItemsFromState = (type: string, state: any) => {
-    if (type === ContentActions.LIST_HIGHEST_RATED_CONTENT) {
-      return state.seriesContent.highestRatedItems.find(
-        (item: ISeriesItem) => item.id === itemId
-      );
-    } else if (type === ContentActions.LIST_MOST_POPULAR_CONTENT) {
-      return state.seriesContent.mostPopularItems.find(
-        (item: ISeriesItem) => item.id === itemId
-      );
-    }
-  };
-
-  const itemId: number = props.navigation.getParam("itemId");
-  const contentType: string = props.navigation.getParam("contentType");
-
-  const item: ISeriesItem = useSelector((state) =>
-    getItemsFromState(contentType, state)
-  );
+  const item: ISeriesItem = props.navigation.getParam("item");
 
   const getYearFormat = (startDate?: string, endDate?: string) => {
     let dates: string = "";
@@ -82,8 +61,8 @@ const DetailView = (props: IDetailViewProps) => {
     return dates;
   };
 
-  const Url = ({ url }) => {
-    return <OpenURLButton url={url}>{url}</OpenURLButton>;
+  const Url = ({ url, children }) => {
+    return <OpenURLButton url={url}>{children}</OpenURLButton>;
   };
 
   return (
@@ -107,8 +86,29 @@ const DetailView = (props: IDetailViewProps) => {
               title="Episodes"
               content={item.episodeCount?.toString()}
             />
+            <TextDetail title="Trailer">
+              {!item.youtubeLink ? (
+                <Text>No trailer available</Text>
+              ) : (
+                <Url
+                  key={`https://www.youtube.com/watch?v=${item.youtubeLink}`}
+                  url={`https://www.youtube.com/watch?v=${item.youtubeLink}`}
+                >
+                  <Ionicons
+                    name={
+                      Platform.OS === "android"
+                        ? "logo-youtube"
+                        : "logo-youtube"
+                    }
+                    size={40}
+                    color="red"
+                  />
+                </Url>
+              )}
+            </TextDetail>
           </View>
         </View>
+        <View></View>
         <View>
           <View>
             <View style={styles.detailsSectionContainer}>
@@ -131,7 +131,7 @@ const DetailView = (props: IDetailViewProps) => {
             <View style={styles.synopsis}>
               <TextDetail title="Synopsis" content={item.synopsis} />
             </View>
-
+            <View></View>
             <View style={styles.streamSection}>
               <TextDetail title="Stream links" />
 
@@ -141,7 +141,17 @@ const DetailView = (props: IDetailViewProps) => {
                 </Text>
               ) : (
                 item.streamLinks?.map((stream: IStreamLinks) => {
-                  return <Url key={stream.url} url={stream.url} />;
+                  return (
+                    <Url key={stream.url} url={stream.url}>
+                      <Text
+                        numberOfLines={2}
+                        adjustsFontSizeToFit={true}
+                        style={styles.streamLinkText}
+                      >
+                        {stream.url}
+                      </Text>
+                    </Url>
+                  );
                 })
               )}
             </View>

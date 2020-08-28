@@ -13,7 +13,7 @@ interface ISectionViewProps {
 
 let pagination: IUrlPagination = {
   pageLimit: 10,
-  pageOffset: 20,
+  pageOffset: 0,
 };
 
 let relations: IRelationShip = {
@@ -31,27 +31,44 @@ const SectionView = (props: ISectionViewProps) => {
   const [offsetState, setOffsetState] = useState(pagination);
 
   let itemCollection: Array<ISeriesItem> = [];
-  let contentType: string = "";
 
+  //Code to refactor, but meantime evaluating which specific section is loading to add sorting field.
   if (section === ContentActions.LIST_HIGHEST_RATED_CONTENT) {
     sortField.fields = ["ratingRank"];
-    itemCollection = useSelector(
-      (state) => state.seriesContent.highestRatedItems
-    );
   } else if (section === ContentActions.LIST_MOST_POPULAR_CONTENT) {
     sortField.fields = ["popularityRank"];
-    itemCollection = useSelector(
-      (state) => state.seriesContent.mostPopularItems
-    );
   }
+
+  itemCollection = useSelector((state) => state.seriesContent.sectionItems);
+
+  console.log(props.navigation);
+
+  const getRelations = () => {
+    let relations: IRelationShip;
+
+    if (props.navigation.getParam("content") === "anime") {
+      relations = {
+        relationship: ["genres", "streamingLinks"],
+      };
+    } else {
+      relations = {
+        relationship: ["genres"],
+      };
+    }
+    return relations;
+  };
+
+  useEffect(() => {
+    dispatch(contentActions.clearSections());
+  }, []);
 
   useEffect(() => {
     dispatch(
       contentActions.listInitialContent(
-        "anime",
-        section,
+        props.navigation.state.params.content,
+        ContentActions.LOAD_SECTION,
         offsetState,
-        relations,
+        getRelations(),
         sortField
       )
     );
@@ -65,7 +82,6 @@ const SectionView = (props: ISectionViewProps) => {
           textStyle={styles.itemTitle}
           item={itemData.item}
           navigation={props.navigation}
-          contentType={section}
         />
       </View>
     );

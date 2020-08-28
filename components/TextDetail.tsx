@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { IGenres } from "../model/seriesItem";
 
@@ -6,6 +6,7 @@ interface ITextDetail {
   title: string;
   content?: string;
   arrayContent?: IGenres[];
+  children?: any;
 }
 
 const TextDetail = (props: ITextDetail) => {
@@ -21,9 +22,13 @@ const TextDetail = (props: ITextDetail) => {
       <Text numberOfLines={2} style={styles.title}>
         {props.title}
       </Text>
-      <Text adjustsFontSizeToFit={true} style={styles.content}>
-        {content}
-      </Text>
+      {!props.children ? (
+        <Text adjustsFontSizeToFit={true} style={styles.content}>
+          {content}
+        </Text>
+      ) : (
+        props.children
+      )}
     </View>
   );
 };

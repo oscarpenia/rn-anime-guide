@@ -34,6 +34,7 @@ const ListCardItem = (props: IListCardItemProps) => {
       routeName: "SectionView",
       params: {
         section: props.contentType,
+        content: props.navigation.state.params.content,
       },
     });
   };

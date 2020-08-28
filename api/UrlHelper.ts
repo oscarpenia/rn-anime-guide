@@ -43,12 +43,16 @@ export const getRequestedUrl = (
   url = baseUrl.concat(`/${type}?`);
 
   if (typeFilter) {
+    let tmpUrl: string = url;
     if (typeFilter?.field !== undefined) {
-      url.concat(`filter[text]=${typeFilter.field}`);
+      tmpUrl = url.concat(`filter[text]=${typeFilter.field}`);
     } else if (typeFilter?.fields !== undefined) {
-      url.concat(`[${typeFilter.fields.atribute}]=${typeFilter.fields.value}`);
-      url.concat("&");
+      tmpUrl = url.concat(
+        `[${typeFilter.fields.atribute}]=${typeFilter.fields.value}`
+      );
     }
+    tmpUrl = tmpUrl.concat("&");
+    url = tmpUrl;
   }
 
   if (typeSort) {
