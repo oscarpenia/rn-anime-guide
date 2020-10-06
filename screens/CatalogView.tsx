@@ -1,8 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react";
 import {
   View,
-  Text,
-  Button,
   StyleSheet,
   ScrollView,
   SafeAreaView,
@@ -14,25 +12,25 @@ import { ISeriesItem } from "../model/seriesItem";
 import ListCardItem from "../components//ListCardItem";
 import HeaderButton from "../components/CustomHeaderButton";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { IUrlPagination, IRelationShip, ISort } from "../api/urlHelper";
+import { IRelationShip } from "../api/urlHelper";
 import { ContentActions } from "../constants/actionContants";
 
-let pagination: IUrlPagination = {
-  pageLimit: 20,
-  pageOffset: 0,
+let pagination: {
+  pageLimit: 20;
+  pageOffset: 0;
 };
 
-let animeRelations: IRelationShip = {
+let animeRelations = {
   relationship: ["genres", "streamingLinks"],
 };
-let mangaRelations: IRelationShip = {
+let mangaRelations = {
   relationship: ["genres"],
 };
 
-let sortHighestRated: ISort = {
+let sortHighestRated = {
   fields: ["ratingRank"],
 };
-let sortMostPopular: ISort = {
+let sortMostPopular = {
   fields: ["popularityRank"],
 };
 
@@ -52,7 +50,7 @@ const CatalogView = (props: any) => {
   );
   console.log(contentType);
 
-  const validateRelations = () => {
+  const validateRelations = (): IRelationShip => {
     if (contentType === "anime") {
       return animeRelations;
     }

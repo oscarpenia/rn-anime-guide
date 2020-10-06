@@ -4,8 +4,10 @@ import {
   IRelationShip,
   ISort,
   IUrlFilter,
+  IFieldSet,
 } from "../../api/urlHelper";
 import { ContentActions } from "../../constants/actionContants";
+import { Dispatch } from "redux";
 
 export interface IAction {
   type: String;
@@ -19,7 +21,7 @@ export interface ISimpleArgumentAction {
 
 const normalize = require("json-api-normalize");
 
-const fetchApi = async (url: string) => {
+const fetchApi = async (url: string): Promise<String[]> => {
   let normalizedData: Array<String>;
   try {
     const response = await fetch(url, {
@@ -70,7 +72,7 @@ export const listInitialContent = (
   typeFilter?: IUrlFilter,
   typeFieldSet?: IFieldSet
 ) => {
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     let url: string;
 
     url = getRequestedUrl(
@@ -101,7 +103,7 @@ export const searchContent = (
 ) => {
   let url: string;
 
-  return async (dispatch) => {
+  return async (dispatch: Dispatch) => {
     url = getRequestedUrl(
       type,
       pagination,

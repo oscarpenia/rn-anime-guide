@@ -43,7 +43,7 @@ const SectionView = (props: ISectionViewProps) => {
 
   console.log(props.navigation);
 
-  const getRelations = () => {
+  const getRelations = (): IRelationShip => {
     let relations: IRelationShip;
 
     if (props.navigation.getParam("content") === "anime") {

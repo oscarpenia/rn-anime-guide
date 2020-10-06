@@ -1,16 +1,16 @@
-import { ContentActions } from "../../constants/actionContants";
-import { IAction } from "../actions/contentActions";
+import { IAction, ContentActions } from "../actions/index";
 import ContentList from "../../components/ContentItem";
 import { ISeriesItem, IGenres } from "../../model/seriesItem";
 
-interface ContentList {
+export interface ContentList {
   highestRatedItems: ISeriesItem[];
   mostPopularItems: ISeriesItem[];
   searchedItems: ISeriesItem[];
   sectionItems: ISeriesItem[];
 }
 
-const createSeriesItem = (item: any) => {
+//Creating ISeriesItem to add them into state.
+const createSeriesItem = (item: any): ISeriesItem => {
   const seriesItem: ISeriesItem = {
     id: item.id,
     canonicalTitle: item.canonicalTitle,
@@ -32,7 +32,7 @@ const createSeriesItem = (item: any) => {
   return seriesItem;
 };
 
-export default (
+export const contentReducer = (
   state: ContentList = {
     highestRatedItems: [],
     mostPopularItems: [],
@@ -45,7 +45,7 @@ export default (
     case ContentActions.LIST_HIGHEST_RATED_CONTENT:
       const higuestRatedContent = new Array<ISeriesItem>();
 
-      action.payload.map((item: any) => {
+      action.payload.map((item: String) => {
         let itemContent = createSeriesItem(item);
         if (!state.highestRatedItems.includes(itemContent)) {
           higuestRatedContent.push(itemContent);
@@ -60,7 +60,7 @@ export default (
     case ContentActions.LIST_MOST_POPULAR_CONTENT:
       const mostPopularContent = new Array<ISeriesItem>();
 
-      action.payload.map((item: any) => {
+      action.payload.map((item: String): void => {
         let itemContent = createSeriesItem(item);
 
         if (!state.mostPopularItems.includes(itemContent)) {
@@ -74,7 +74,7 @@ export default (
 
     case ContentActions.SEARCH_CONTENT:
       const searchedItems = new Array<ISeriesItem>();
-      action.payload.map((item: any) => {
+      action.payload.map((item: String) => {
         let itemContent = createSeriesItem(item);
 
         if (!state.searchedItems.includes(itemContent)) {

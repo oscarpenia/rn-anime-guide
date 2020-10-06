@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, StyleSheet, Text } from "react-native";
 import SearchBar from "../components/SearchBar";
-import { IUrlFilter, IUrlPagination, IRelationShip } from "../api/urlHelper";
+import { IRelationShip } from "../api/urlHelper";
 import * as contentActions from "../store/actions/contentActions";
 import { ISeriesItem } from "../model/seriesItem";
 import CatalogContent from "../components/CatalogContent";
-import ContentItem from "../components/ContentItem";
 
 interface ISearchViewProps {
   navigation: any;
@@ -15,20 +14,16 @@ const SearchView = (props: ISearchViewProps) => {
   const content: string = props.navigation.getParam("content");
 
   const dispatch = useDispatch();
-  let textFilter: IUrlFilter = {
+  let textFilter = {
     field: "",
   };
-  let pagination: IUrlPagination = {
+  let pagination = {
     pageLimit: 20,
     pageOffset: 0,
   };
 
-  let relations: IRelationShip = {
-    relationship: ["genres", "streamingLinks"],
-  };
-
   const getRelations = () => {
-    let relations: IRelationShip;
+    let relations;
 
     if (content === "anime") {
       relations = {
@@ -45,7 +40,7 @@ const SearchView = (props: ISearchViewProps) => {
   let items: ISeriesItem[] = [];
   items = useSelector((state) => state.seriesContent.searchedItems);
 
-  const onChangeSearchText = (value: string) => {
+  const onChangeSearchText = (value: string): void => {
     textFilter.field = value;
     dispatch(contentActions.clearSections());
     dispatch(

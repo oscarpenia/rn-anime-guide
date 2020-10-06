@@ -9,7 +9,7 @@ interface ICatalogContentProps {
   navigation: any;
   pagination: boolean;
 }
-let pagination: IUrlPagination = {
+let pagination = {
   pageLimit: 10,
   pageOffset: 20,
 };

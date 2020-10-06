@@ -14,41 +14,19 @@ import {
 import { ISeriesItem, IStreamLinks } from "../model/seriesItem";
 import TextDetail from "../components/TextDetail";
 import colors from "../constants/Colors";
-import YouTube from "react-native-youtube";
 import { Ionicons } from "@expo/vector-icons";
+import OpenURLButton from "../components/UrlButton";
 
 interface IDetailViewProps {
   navigation: any; //Pending to implement typed navigation
   //Adding interface for any other parameter that needs to be typed
 }
 
-const OpenURLButton = ({ url, children }) => {
-  const handlePress = useCallback(async () => {
-    // Checking if the link is supported for links with custom URL scheme.
-    const supported = await Linking.canOpenURL(url);
-
-    if (supported) {
-      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
-      // by some browser in the mobile
-      await Linking.openURL(url);
-    } else {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
-    }
-  }, [url]);
-  return (
-    <View style={styles.streamContainer}>
-      <TouchableOpacity onPress={handlePress}>{children}</TouchableOpacity>
-    </View>
-  );
-};
-
-const openUrl = () => {};
-
 const DetailView = (props: IDetailViewProps) => {
   const item: ISeriesItem = props.navigation.getParam("item");
 
-  const getYearFormat = (startDate?: string, endDate?: string) => {
-    let dates: string = "";
+  const getYearFormat = (startDate?: string, endDate?: string): string => {
+    let dates = "";
     if (startDate && endDate) {
       dates = startDate + "/" + endDate;
     }
@@ -59,10 +37,6 @@ const DetailView = (props: IDetailViewProps) => {
       dates = endDate;
     }
     return dates;
-  };
-
-  const Url = ({ url, children }) => {
-    return <OpenURLButton url={url}>{children}</OpenURLButton>;
   };
 
   return (
@@ -90,7 +64,7 @@ const DetailView = (props: IDetailViewProps) => {
               {!item.youtubeLink ? (
                 <Text>No trailer available</Text>
               ) : (
-                <Url
+                <OpenURLButton
                   key={`https://www.youtube.com/watch?v=${item.youtubeLink}`}
                   url={`https://www.youtube.com/watch?v=${item.youtubeLink}`}
                 >
@@ -103,7 +77,7 @@ const DetailView = (props: IDetailViewProps) => {
                     size={40}
                     color="red"
                   />
-                </Url>
+                </OpenURLButton>
               )}
             </TextDetail>
           </View>
@@ -142,7 +116,7 @@ const DetailView = (props: IDetailViewProps) => {
               ) : (
                 item.streamLinks?.map((stream: IStreamLinks) => {
                   return (
-                    <Url key={stream.url} url={stream.url}>
+                    <OpenURLButton key={stream.url} url={stream.url}>
                       <Text
                         numberOfLines={2}
                         adjustsFontSizeToFit={true}
@@ -150,7 +124,7 @@ const DetailView = (props: IDetailViewProps) => {
                       >
                         {stream.url}
                       </Text>
-                    </Url>
+                    </OpenURLButton>
                   );
                 })
               )}
@@ -216,9 +190,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: colors.primary,
     width: "95%",
-  },
-  streamContainer: {
-    padding: 5,
   },
   streamLinkText: {
     fontSize: 16,

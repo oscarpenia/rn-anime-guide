@@ -6,11 +6,15 @@ import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import ReduxThunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import ContentReducer from "./store/reducers/contentReducers";
+import { contentReducer, ContentList } from "./store/reducers/contentReducers";
 
 export default function App() {
-  const animeGuideReducers = combineReducers({
-    seriesContent: ContentReducer,
+  interface StoreState {
+    seriesContent: ContentList;
+  }
+
+  const animeGuideReducers = combineReducers<StoreState>({
+    seriesContent: contentReducer,
   });
 
   const store = createStore(

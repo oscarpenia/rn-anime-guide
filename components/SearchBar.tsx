@@ -4,7 +4,7 @@ import Colors from "../constants/Colors";
 
 //Defining interface Searchbar prop
 interface ISearchBarProps {
-  onChangeValue: Function;
+  onChangeValue(value: string): void;
 }
 
 const SearchBar = (props: ISearchBarProps) => {
@@ -19,7 +19,6 @@ const SearchBar = (props: ISearchBarProps) => {
         onEndEditing={(e) => onChangeInputText(e.nativeEvent.text)}
         keyboardType="default"
         placeholder="What are you searching for"
-        //value={currentValue}
       />
     </View>
   );
